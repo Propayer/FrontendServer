@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frontend - Data Sender</title>
+</head>
+<body>
+  <h1>Enviar Datos al Backend</h1>
+  <form id="dataForm">
+    <label for="userName">Nombre de Usuario:</label>
+    <input type="text" id="userName" name="userName" placeholder="Introduce tu nombre" required>
+    <br><br>
+    <label for="dataInput">Datos:</label>
+    <input type="text" id="dataInput" name="dataInput" placeholder="Introduce datos" required>
+    <br><br>
+    <button type="submit">Enviar</button>
+  </form>
+  <p id="response"></p>
+
+  <script>
+    document.getElementById('dataForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const userName = document.getElementById('userName').value;
+      const dataInput = document.getElementById('dataInput').value;
+
+      // Crea el objeto de datos a enviar
+      const dataToSend = {
+        userName: userName,
+        data: dataInput
+      };
+
+      try {
+        // Realiza una solicitud POST al backend
+        const response = await fetch('http://127.0.0.1:5001', { // Cambia esto por la IP/URL de tu backend
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dataToSend)
+        });
+
+        if (response.ok) {
+          const result = await response.text();
+          document.getElementById('response').innerText = `Respuesta del Backend: ${result}`;
+        } else {
+          document.getElementById('response').innerText = 'Error al enviar los datos al Backend.';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('response').innerText = 'No se pudo conectar con el Backend.';
+      }
+    });
+  </script>
+</body>
+</html>
