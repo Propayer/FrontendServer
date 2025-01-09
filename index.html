@@ -12,13 +12,11 @@
             // Obtener los valores de los campos del formulario
             const usuario = document.getElementById("usuario").value;
             const contraseña = document.getElementById("contraseña").value;
-            const dato = "DA";  // Aquí puedes cambiar "DA" por cualquier dato adicional que quieras enviar
 
             // Crear un objeto con los datos del formulario
             const data = {
                 user: usuario,
-                password: contraseña,
-                dato: dato // Agregar el campo 'dato' que se espera en el backend
+                password: contraseña
             };
 
             try {
@@ -45,7 +43,6 @@
                             <h3>Datos recibidos:</h3>
                             <p><strong>Usuario:</strong> ${responseData.User}</p>
                             <p><strong>Contraseña:</strong> ${responseData.Password}</p>
-                            <p><strong>Dato X:</strong> ${responseData.Data}</p>
                         `;
                     }
                 } else {
