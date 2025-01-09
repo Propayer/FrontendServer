@@ -1,69 +1,69 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Envío de Datos</title>
+    <title>Frontend</title>
+</head>
+<body>
+    <h1>Frontend</h1>
+    
+    <!-- Formulario para recibir los datos desde el módulo central -->
+    <form id="dataForm">
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" name="usuario" required><br><br>
+        
+        <label for="contraseña">Contraseña:</label>
+        <input type="password" id="contraseña" name="contraseña" required><br><br>
+        
+        <label for="dato">Dato:</label>
+        <input type="text" id="dato" name="dato" required><br><br>
+
+        <label for="additionalInfo">Additional Info (optional):</label>
+        <input type="text" id="additionalInfo" name="additionalInfo"><br><br>
+
+        <button type="submit">Enviar Datos al Backend</button>
+    </form>
+
     <script>
-        // Función para enviar los datos al backend
-        async function sendData(usuario, contraseña, dato) {
-            // Crear el objeto de datos a enviar en formato JSON
+        // Obtener el formulario y asignar un evento para cuando se envíe el formulario
+        document.getElementById("dataForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evitar el envío del formulario por defecto
+
+            // Recoger los datos introducidos por el usuario
+            const usuario = document.getElementById("usuario").value;
+            const contraseña = document.getElementById("contraseña").value;
+            const dato = document.getElementById("dato").value;
+            const additionalInfo = document.getElementById("additionalInfo").value;
+
+            // Crear el objeto de datos que se va a enviar al backend
             const data = {
                 usuario: usuario,
                 contraseña: contraseña,
                 dato: dato,
-                additionalInfo: "noresponse"  // Esto indica que el backend no debe responder, solo almacenar
+                additionalInfo: additionalInfo
             };
 
-            try {
-                // Enviar los datos al backend (usando fetch API)
-                const response = await fetch('http://localhost:5001/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
+            // Convertir los datos a JSON
+            const jsonData = JSON.stringify(data);
 
-                // Verificar la respuesta del backend (aunque no debe responder si "noresponse" es usado)
-                if (response.ok) {
-                    console.log("Datos enviados al backend para almacenar.");
-                } else {
-                    console.log("Error al enviar los datos al backend.");
-                }
-            } catch (error) {
-                console.error('Error al enviar los datos:', error);
-            }
-        }
-
-        // Función para manejar el formulario
-        async function handleFormSubmission() {
-            const usuario = document.getElementById("usuario").value;
-            const contraseña = document.getElementById("contraseña").value;
-            const dato = document.getElementById("dato").value;
-
-            await sendData(usuario, contraseña, dato);
-        }
+            // Enviar los datos al backend
+            fetch('https://417a-79-117-106-243.ngrok-free.app', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+            .then(response => response.json())
+            .then(responseData => {
+                // Imprimir en la consola los datos recibidos del backend
+                console.log("Datos recibidos del backend:", responseData);
+            })
+            .catch(error => {
+                console.error("Error al enviar los datos al backend:", error);
+            });
+        });
     </script>
-</head>
-<body>
-    <h1>Formulario de Envío de Datos</h1>
-    
-    <!-- Formulario para ingresar los datos -->
-    <form onsubmit="event.preventDefault(); handleFormSubmission();">
-        <label for="usuario">Usuario:</label>
-        <input type="text" id="usuario" required><br><br>
-
-        <label for="contraseña">Contraseña:</label>
-        <input type="password" id="contraseña" required><br><br>
-
-        <label for="dato">Dato X:</label>
-        <input type="text" id="dato" required><br><br>
-
-        <button type="submit">Enviar</button>
-    </form>
-
-    <h2>Respuesta del Backend:</h2>
-    <pre id="respuesta"></pre>
 </body>
 </html>
