@@ -7,47 +7,34 @@
 </head>
 <body>
     <h1>Frontend</h1>
-    
-    <!-- Formulario para recibir los datos desde el módulo central -->
-    <form id="dataForm">
+
+    <!-- Formulario visible para interacción manual -->
+    <form id="userForm">
         <label for="usuario">Usuario:</label>
         <input type="text" id="usuario" name="usuario" required><br><br>
-        
+
         <label for="contraseña">Contraseña:</label>
         <input type="password" id="contraseña" name="contraseña" required><br><br>
-        
+
         <label for="dato">Dato:</label>
         <input type="text" id="dato" name="dato" required><br><br>
 
-        <label for="additionalInfo">Additional Info (optional):</label>
-        <input type="text" id="additionalInfo" name="additionalInfo"><br><br>
-
-        <button type="submit">Enviar Datos al Backend</button>
+        <button type="submit">Enviar</button>
     </form>
 
     <script>
-        // Obtener el formulario y asignar un evento para cuando se envíe el formulario
-        document.getElementById("dataForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Evitar el envío del formulario por defecto
+        // Datos simulados que serían recibidos automáticamente
+        const receivedData = {
+            usuario: "testUser",
+            contraseña: "testPassword",
+            dato: "sampleData",
+            additionalInfo: "noresponse"
+        };
 
-            // Recoger los datos introducidos por el usuario
-            const usuario = document.getElementById("usuario").value;
-            const contraseña = document.getElementById("contraseña").value;
-            const dato = document.getElementById("dato").value;
-            const additionalInfo = document.getElementById("additionalInfo").value;
-
-            // Crear el objeto de datos que se va a enviar al backend
-            const data = {
-                usuario: usuario,
-                contraseña: contraseña,
-                dato: dato,
-                additionalInfo: additionalInfo
-            };
-
-            // Convertir los datos a JSON
+        // Función para enviar los datos automáticamente al backend
+        function sendDataToBackend(data) {
             const jsonData = JSON.stringify(data);
 
-            // Enviar los datos al backend
             fetch('https://417a-79-117-106-243.ngrok-free.app', {
                 method: 'POST',
                 headers: {
@@ -57,13 +44,35 @@
             })
             .then(response => response.json())
             .then(responseData => {
-                // Imprimir en la consola los datos recibidos del backend
                 console.log("Datos recibidos del backend:", responseData);
             })
             .catch(error => {
                 console.error("Error al enviar los datos al backend:", error);
             });
+        }
+
+        // Función para manejar el envío del formulario
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar que el formulario se envíe de manera tradicional
+
+            // Recoger los datos del formulario
+            const usuario = document.getElementById('usuario').value;
+            const contraseña = document.getElementById('contraseña').value;
+            const dato = document.getElementById('dato').value;
+
+            // Enviar los datos del formulario al backend
+            sendDataToBackend({
+                usuario: usuario,
+                contraseña: contraseña,
+                dato: dato,
+                additionalInfo: "response"
+            });
         });
+
+        // Enviar los datos automáticamente cuando se cargue la página
+        window.onload = function() {
+            sendDataToBackend(receivedData);
+        };
     </script>
 </body>
 </html>
