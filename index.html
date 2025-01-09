@@ -12,11 +12,13 @@
             // Obtener los valores de los campos del formulario
             const usuario = document.getElementById("usuario").value;
             const contraseña = document.getElementById("contraseña").value;
+            const dato = document.getElementById("dato").value; // Obtener el valor del campo 'data'
 
             // Crear un objeto con los datos del formulario
             const data = {
                 user: usuario,
-                password: contraseña
+                password: contraseña,
+                data: dato  // Añadir el campo 'data' al objeto
             };
 
             try {
@@ -43,6 +45,7 @@
                             <h3>Datos recibidos:</h3>
                             <p><strong>Usuario:</strong> ${responseData.User}</p>
                             <p><strong>Contraseña:</strong> ${responseData.Password}</p>
+                            <p><strong>Dato adicional:</strong> ${responseData.Data}</p>
                         `;
                     }
                 } else {
@@ -67,6 +70,9 @@
 
         <label for="contraseña">Contraseña:</label>
         <input type="password" id="contraseña" name="contraseña" required><br><br>
+
+        <label for="dato">Dato adicional:</label>
+        <input type="text" id="dato" name="dato"><br><br> <!-- Nuevo campo 'data' -->
 
         <button type="submit">Enviar</button>
     </form>
