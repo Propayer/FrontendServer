@@ -6,15 +6,13 @@
     <title>Formulario de Envío de Datos</title>
     <script>
         // Función para enviar los datos al backend
-        async function sendData() {
-            // Obtener los valores del formulario
-            const usuario = document.getElementById("usuario").value;
-            const dato = document.getElementById("dato").value;
-
+        async function sendData(usuario, contraseña, dato) {
             // Crear el objeto de datos a enviar en formato JSON
             const data = {
                 usuario: usuario,
-                dato: dato
+                contraseña: contraseña,
+                dato: dato,
+                additionalInfo: "noresponse"  // Esto indica que el backend no debe responder, solo almacenar
             };
 
             try {
@@ -27,15 +25,24 @@
                     body: JSON.stringify(data)
                 });
 
-                // Leer la respuesta del backend
-                const responseData = await response.json();
-
-                // Mostrar la respuesta en el frontend
-                document.getElementById("respuesta").innerText = JSON.stringify(responseData, null, 2);
+                // Verificar la respuesta del backend (aunque no debe responder si "noresponse" es usado)
+                if (response.ok) {
+                    console.log("Datos enviados al backend para almacenar.");
+                } else {
+                    console.log("Error al enviar los datos al backend.");
+                }
             } catch (error) {
                 console.error('Error al enviar los datos:', error);
-                document.getElementById("respuesta").innerText = 'Error al enviar los datos.';
             }
+        }
+
+        // Función para manejar el formulario
+        async function handleFormSubmission() {
+            const usuario = document.getElementById("usuario").value;
+            const contraseña = document.getElementById("contraseña").value;
+            const dato = document.getElementById("dato").value;
+
+            await sendData(usuario, contraseña, dato);
         }
     </script>
 </head>
@@ -43,11 +50,14 @@
     <h1>Formulario de Envío de Datos</h1>
     
     <!-- Formulario para ingresar los datos -->
-    <form onsubmit="event.preventDefault(); sendData();">
+    <form onsubmit="event.preventDefault(); handleFormSubmission();">
         <label for="usuario">Usuario:</label>
         <input type="text" id="usuario" required><br><br>
 
-        <label for="dato">Dato:</label>
+        <label for="contraseña">Contraseña:</label>
+        <input type="password" id="contraseña" required><br><br>
+
+        <label for="dato">Dato X:</label>
         <input type="text" id="dato" required><br><br>
 
         <button type="submit">Enviar</button>
