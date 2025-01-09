@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frontend</title>
+    <title>Formulario de Datos</title>
 </head>
 <body>
-    <h1>Frontend</h1>
-
-    <!-- Formulario visible para interacción manual -->
-    <form id="userForm">
+    <h1>Formulario de Datos Recibidos</h1>
+    <form id="dataForm">
         <label for="usuario">Usuario:</label>
         <input type="text" id="usuario" name="usuario" required><br><br>
 
@@ -19,57 +17,46 @@
         <label for="dato">Dato:</label>
         <input type="text" id="dato" name="dato" required><br><br>
 
-        <button type="submit">Enviar</button>
+        <button type="submit">Enviar al Backend</button>
     </form>
 
     <script>
+        // Función para recibir los datos del módulo central
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // Esto simula la recepción de datos del módulo central
+            const receivedData = {
+                usuario: 'usuarioEjemplo',  // Datos simulados
+                contraseña: 'contraseñaEjemplo',
+                dato: 'datoXEjemplo',
+                additionalInfo: 'noresponse'
+            };
+
+            // Asignar los datos recibidos a los campos del formulario
+            document.getElementById('usuario').value = receivedData.usuario;
+            document.getElementById('contraseña').value = receivedData.contraseña;
+            document.getElementById('dato').value = receivedData.dato;
+
+            // Enviar automáticamente los datos al backend después de completarlos
+            sendDataToBackend(receivedData);
+        });
+
         // Función para enviar los datos al backend
         function sendDataToBackend(data) {
-            const jsonData = JSON.stringify(data);
-
-            fetch('https://417a-79-117-106-243.ngrok-free.app', {
+            fetch('http://localhost:5001/', {  // URL del backend donde recibir los datos
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: jsonData
+                body: JSON.stringify(data)
             })
             .then(response => response.json())
-            .then(responseData => {
-                console.log("Datos recibidos del backend:", responseData);
+            .then(data => {
+                console.log("Datos enviados al backend:", data);
             })
             .catch(error => {
                 console.error("Error al enviar los datos al backend:", error);
             });
         }
-
-        // Función para manejar el envío del formulario
-        document.getElementById('userForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Evitar que el formulario se envíe de manera tradicional
-
-            // Recoger los datos del formulario
-            const usuario = document.getElementById('usuario').value;
-            const contraseña = document.getElementById('contraseña').value;
-            const dato = document.getElementById('dato').value;
-
-            // Enviar los datos del formulario al backend
-            sendDataToBackend({
-                usuario: usuario,
-                contraseña: contraseña,
-                dato: dato,
-                additionalInfo: "response"
-            });
-        });
-
-        // Función para recibir los datos desde el módulo central (por ejemplo, mediante fetch)
-        function receiveDataFromModule() {
-            fetch('https://example.com/api/getData')  // Cambia esto por la URL donde el módulo central envía los datos
-                .then(response => response.json())
-                .then(data => {
-                    // Los datos recibidos desde el módulo central (serán utilizados en el formulario)
-                    console.log("Datos recibidos del módulo central:", data);
-
-                    // Rellenar el formulario con los datos recibidos
-                    document.getElementById('usuario').value = data.usuario;
-                    document.getElementById('contraseña').value = data.contraseña;
-                    document.getElementBy
+    </script>
+</body>
+</html>
