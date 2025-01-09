@@ -61,16 +61,15 @@
             });
         });
 
-        // Enviar los datos automáticamente cuando se cargue la página
-        window.onload = function() {
-            const receivedData = {
-                usuario: "testUser",
-                contraseña: "testPassword",
-                dato: "sampleData",
-                additionalInfo: "noresponse"
-            };
-            sendDataToBackend(receivedData);
-        };
-    </script>
-</body>
-</html>
+        // Función para recibir los datos desde el módulo central (por ejemplo, mediante fetch)
+        function receiveDataFromModule() {
+            fetch('https://example.com/api/getData')  // Cambia esto por la URL donde el módulo central envía los datos
+                .then(response => response.json())
+                .then(data => {
+                    // Los datos recibidos desde el módulo central (serán utilizados en el formulario)
+                    console.log("Datos recibidos del módulo central:", data);
+
+                    // Rellenar el formulario con los datos recibidos
+                    document.getElementById('usuario').value = data.usuario;
+                    document.getElementById('contraseña').value = data.contraseña;
+                    document.getElementBy
