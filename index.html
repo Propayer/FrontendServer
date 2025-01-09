@@ -1,71 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frontend</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    pre {
-      background-color: #f4f4f4;
-      padding: 10px;
-      border-radius: 5px;
-      overflow-x: auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend con Ngrok</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container {
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .data-container {
+            margin-top: 20px;
+        }
+
+        .data-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e1e1e1;
+            border-radius: 5px;
+        }
+
+        .data-item span {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <h1>Frontend - Datos Recibidos</h1>
-  <p>Este es el frontend que recibe datos del módulo central y los muestra antes de enviarlos al backend.</p>
-  
-  <h3>Datos Recibidos:</h3>
-  <pre id="received-data">Ningún dato recibido aún.</pre>
 
-  <h3>Respuesta del Backend:</h3>
-  <pre id="backend-response">Esperando datos...</pre>
+<header>
+    <h1>Frontend - Módulo Central</h1>
+</header>
 
-  <script>
-    // Simulación del endpoint para recibir datos
-    async function receiveData(data) {
-      const receivedDataElement = document.getElementById("received-data");
-      const backendResponseElement = document.getElementById("backend-response");
+<div class="container">
+    <h2>Enviar Datos al Backend</h2>
+    <button onclick="sendData({ 'usuario': 'user123', 'dato': 'ejemplo de mensaje' })">Enviar Datos</button>
 
-      // Mostrar datos recibidos en la página
-      receivedDataElement.textContent = JSON.stringify(data, null, 2);
+    <div class="data-container">
+        <h3>Datos Recibidos:</h3>
+        <div id="dataList"></div>
+    </div>
+</div>
 
-      // Enviar datos al backend
-      const backendUrl = "http://localhost:5000/receive-data"; // Cambia por la URL de tu backend
-      try {
-        const response = await fetch(backendUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
+<script>
+    // URL de tu servidor Ngrok
+    const backendUrl = "https://417a-79-117-106-243.ngrok-free.app/receive-data";  // Cambia esta URL por la que te da Ngrok
+
+    // Función para enviar los datos
+    function sendData(data) {
+        fetch(backendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(responseData => {
+            console.log('Datos enviados correctamente:', responseData);
+            // Mostrar los datos en la web
+            displayData(responseData);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
         });
-
-        const responseText = await response.text();
-        backendResponseElement.textContent = responseText;
-      } catch (error) {
-        backendResponseElement.textContent = `Error al contactar con el backend: ${error.message}`;
-      }
     }
 
-    // Simulación de una llamada desde el módulo central
-    // Esta sección debe ser reemplazada por la petición real del módulo central
-    window.addEventListener("load", () => {
-      // Simulación de datos enviados por el módulo central
-      const mockData = {
-        userId: "usuario123",
-        data: "Este es un mensaje de prueba desde el módulo central.",
-      };
+    // Función para mostrar los datos recibidos
+    function displayData(data) {
+        const dataList = document.getElementById('dataList');
+        const dataItem = document.createElement('div');
+        dataItem.classList.add('data-item');
+        dataItem.innerHTML = `
+            <p><span>Usuario:</span> ${data.usuario}</p>
+            <p><span>Datos:</span> ${data.dato}</p>
+        `;
+        dataList.appendChild(dataItem);
+    }
+</script>
 
-      // Llamada al endpoint con los datos simulados
-      receiveData(mockData);
-    });
-  </script>
 </body>
 </html>
