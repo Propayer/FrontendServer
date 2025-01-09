@@ -23,15 +23,7 @@
     </form>
 
     <script>
-        // Datos simulados que serían recibidos automáticamente
-        const receivedData = {
-            usuario: "testUser",
-            contraseña: "testPassword",
-            dato: "sampleData",
-            additionalInfo: "noresponse"
-        };
-
-        // Función para enviar los datos automáticamente al backend
+        // Función para enviar los datos al backend
         function sendDataToBackend(data) {
             const jsonData = JSON.stringify(data);
 
@@ -71,6 +63,12 @@
 
         // Enviar los datos automáticamente cuando se cargue la página
         window.onload = function() {
+            const receivedData = {
+                usuario: "testUser",
+                contraseña: "testPassword",
+                dato: "sampleData",
+                additionalInfo: "noresponse"
+            };
             sendDataToBackend(receivedData);
         };
     </script>
