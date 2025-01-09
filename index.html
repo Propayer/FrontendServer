@@ -3,55 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitud de Datos</title>
+    <title>Formulario de Usuario</title>
     <script>
-        // Función para enviar los datos al backend y mostrar los resultados
-        async function enviarDatos() {
-            // Obtener los valores del formulario
-            const usuario = document.getElementById('usuario').value;
-            const contraseña = document.getElementById('contraseña').value;
+        // Función que se ejecuta cuando se envía el formulario
+        async function enviarDatos(event) {
+            event.preventDefault(); // Prevenir que el formulario se envíe de manera convencional
 
-            // Crear el objeto con los datos
+            // Obtener los valores de los campos del formulario
+            const usuario = document.getElementById("usuario").value;
+            const contraseña = document.getElementById("contraseña").value;
+
+            // Crear un objeto con los datos del formulario
             const data = {
-                usuario: usuario,
-                contraseña: contraseña
+                user: usuario,
+                password: contraseña
             };
 
-            // Hacer la solicitud POST al backend
-            const response = await fetch('http://localhost:5001/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+            try {
+                // Enviar los datos al backend utilizando Fetch API
+                const response = await fetch("http://localhost:5001/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data) // Convertir el objeto a JSON
+                });
 
-            // Procesar la respuesta del backend
-            if (response.ok) {
-                const responseData = await response.json();
-                document.getElementById('resultado').innerHTML = `
-                    <p><strong>Datos del usuario:</strong></p>
-                    <p>Usuario: ${responseData.Usuario}</p>
-                    <p>Contraseña: ${responseData.Contraseña}</p>
-                    <p>Dato: ${responseData.Dato}</p>
-                `;
-            } else {
-                document.getElementById('resultado').innerHTML = `<p>No se encontró el usuario o la contraseña es incorrecta.</p>`;
+                // Comprobar si la respuesta fue exitosa
+                if (response.ok) {
+                    // Obtener la respuesta JSON
+                    const responseData = await response.json();
+
+                    // Mostrar los datos recibidos
+                    const resultadoDiv = document.getElementById("resultado");
+                    if (responseData.error) {
+                        resultadoDiv.innerHTML = `<p>Error: ${responseData.error}</p>`;
+                    } else {
+                        resultadoDiv.innerHTML = `
+                            <h3>Datos recibidos:</h3>
+                            <p><strong>Usuario:</strong> ${responseData.User}</p>
+                            <p><strong>Contraseña:</strong> ${responseData.Password}</p>
+                            <p><strong>Dato X:</strong> ${responseData.Data}</p>
+                        `;
+                    }
+                } else {
+                    // Si no es exitoso, mostrar un error
+                    const resultadoDiv = document.getElementById("resultado");
+                    resultadoDiv.innerHTML = "<p>Error al obtener los datos del usuario.</p>";
+                }
+            } catch (error) {
+                // Si hay un error en la conexión, mostrar un mensaje
+                const resultadoDiv = document.getElementById("resultado");
+                resultadoDiv.innerHTML = "<p>Error en la conexión con el backend.</p>";
             }
         }
     </script>
 </head>
 <body>
-    <h1>Solicitar Datos</h1>
 
-    <label for="usuario">Usuario:</label>
-    <input type="text" id="usuario" name="usuario"><br><br>
+    <h2>Formulario de Inicio de Sesión</h2>
+    <form onsubmit="enviarDatos(event)">
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" name="usuario" required><br><br>
 
-    <label for="contraseña">Contraseña:</label>
-    <input type="password" id="contraseña" name="contraseña"><br><br>
+        <label for="contraseña">Contraseña:</label>
+        <input type="password" id="contraseña" name="contraseña" required><br><br>
 
-    <button onclick="enviarDatos()">Enviar</button>
+        <button type="submit">Enviar</button>
+    </form>
 
     <div id="resultado"></div>
+
 </body>
 </html>
