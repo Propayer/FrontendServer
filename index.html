@@ -3,60 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Datos</title>
-</head>
-<body>
-    <h1>Formulario de Datos Recibidos</h1>
-    <form id="dataForm">
-        <label for="usuario">Usuario:</label>
-        <input type="text" id="usuario" name="usuario" required><br><br>
-
-        <label for="contraseña">Contraseña:</label>
-        <input type="password" id="contraseña" name="contraseña" required><br><br>
-
-        <label for="dato">Dato:</label>
-        <input type="text" id="dato" name="dato" required><br><br>
-
-        <button type="submit">Enviar al Backend</button>
-    </form>
-
+    <title>Solicitud de Datos</title>
     <script>
-        // Función para recibir los datos del módulo central
-        window.addEventListener('DOMContentLoaded', (event) => {
-            // Esto simula la recepción de datos del módulo central
-            const receivedData = {
-                usuario: 'usuarioEjemplo',  // Datos simulados
-                contraseña: 'contraseñaEjemplo',
-                dato: 'datoXEjemplo',
-                additionalInfo: 'noresponse'
+        // Función para enviar los datos al backend y mostrar los resultados
+        async function enviarDatos() {
+            // Obtener los valores del formulario
+            const usuario = document.getElementById('usuario').value;
+            const contraseña = document.getElementById('contraseña').value;
+
+            // Crear el objeto con los datos
+            const data = {
+                usuario: usuario,
+                contraseña: contraseña
             };
 
-            // Asignar los datos recibidos a los campos del formulario
-            document.getElementById('usuario').value = receivedData.usuario;
-            document.getElementById('contraseña').value = receivedData.contraseña;
-            document.getElementById('dato').value = receivedData.dato;
-
-            // Enviar automáticamente los datos al backend después de completarlos
-            sendDataToBackend(receivedData);
-        });
-
-        // Función para enviar los datos al backend
-        function sendDataToBackend(data) {
-            fetch('http://localhost:5001/', {  // URL del backend donde recibir los datos
+            // Hacer la solicitud POST al backend
+            const response = await fetch('http://localhost:5001/', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Datos enviados al backend:", data);
-            })
-            .catch(error => {
-                console.error("Error al enviar los datos al backend:", error);
             });
+
+            // Procesar la respuesta del backend
+            if (response.ok) {
+                const responseData = await response.json();
+                document.getElementById('resultado').innerHTML = `
+                    <p><strong>Datos del usuario:</strong></p>
+                    <p>Usuario: ${responseData.Usuario}</p>
+                    <p>Contraseña: ${responseData.Contraseña}</p>
+                    <p>Dato: ${responseData.Dato}</p>
+                `;
+            } else {
+                document.getElementById('resultado').innerHTML = `<p>No se encontró el usuario o la contraseña es incorrecta.</p>`;
+            }
         }
     </script>
+</head>
+<body>
+    <h1>Solicitar Datos</h1>
+
+    <label for="usuario">Usuario:</label>
+    <input type="text" id="usuario" name="usuario"><br><br>
+
+    <label for="contraseña">Contraseña:</label>
+    <input type="password" id="contraseña" name="contraseña"><br><br>
+
+    <button onclick="enviarDatos()">Enviar</button>
+
+    <div id="resultado"></div>
 </body>
 </html>
