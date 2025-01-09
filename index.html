@@ -1,112 +1,61 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frontend con Ngrok</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .container {
-            margin: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .data-container {
-            margin-top: 20px;
-        }
-
-        .data-item {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #e1e1e1;
-            border-radius: 5px;
-        }
-
-        .data-item span {
-            font-weight: bold;
-        }
-    </style>
+    <title>Frontend - Módulo Central</title>
 </head>
 <body>
+    <h1>Enviar Datos al Backend</h1>
 
-<header>
-    <h1>Frontend - Módulo Central</h1>
-</header>
-
-<div class="container">
-    <h2>Enviar Datos al Backend</h2>
-    <button onclick="sendData({ 'usuario': 'user123', 'dato': 'ejemplo de mensaje' })">Enviar Datos</button>
-
-    <div class="data-container">
-        <h3>Datos Recibidos:</h3>
-        <div id="dataList"></div>
+    <div>
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" placeholder="Ingrese su nombre">
     </div>
-</div>
 
-<script>
-    // URL de tu servidor Ngrok
-    const backendUrl = "https://417a-79-117-106-243.ngrok-free.app/receive-data";  // Cambia esta URL por la que te da Ngrok
+    <div>
+        <label for="dato">Dato:</label>
+        <input type="text" id="dato" placeholder="Ingrese un dato">
+    </div>
 
-    // Función para enviar los datos
-    function sendData(data) {
-        fetch(backendUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(responseData => {
-            console.log('Datos enviados correctamente:', responseData);
-            // Mostrar los datos en la web
-            displayData(responseData);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
+    <div>
+        <label for="texto">Texto Adicional:</label>
+        <textarea id="texto" placeholder="Ingrese texto adicional"></textarea>
+    </div>
+
+    <button id="enviar">Enviar Datos</button>
+
+    <h2>Respuesta del Backend:</h2>
+    <pre id="respuesta"></pre>
+
+    <script>
+        document.getElementById('enviar').addEventListener('click', async function() {
+            const usuario = document.getElementById('usuario').value;
+            const dato = document.getElementById('dato').value;
+            const texto = document.getElementById('texto').value;
+
+            const data = {
+                usuario: usuario,
+                dato: dato,
+                texto: texto  // Enviamos el nuevo campo de texto
+            };
+
+            try {
+                const response = await fetch('https://417a-79-117-106-243.ngrok-free.app', {  // Reemplazar con tu URL de ngrok
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const respuestaJson = await response.json();
+                document.getElementById('respuesta').textContent = JSON.stringify(respuestaJson, null, 2);
+            } catch (error) {
+                console.error('Error al enviar datos:', error);
+                document.getElementById('respuesta').textContent = 'Error al enviar datos.';
+            }
         });
-    }
-
-    // Función para mostrar los datos recibidos
-    function displayData(data) {
-        const dataList = document.getElementById('dataList');
-        const dataItem = document.createElement('div');
-        dataItem.classList.add('data-item');
-        dataItem.innerHTML = `
-            <p><span>Usuario:</span> ${data.usuario}</p>
-            <p><span>Datos:</span> ${data.dato}</p>
-        `;
-        dataList.appendChild(dataItem);
-    }
-</script>
-
+    </script>
 </body>
 </html>
