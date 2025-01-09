@@ -1,12 +1,17 @@
 export default function handler(req, res) {
     if (req.method === "POST") {
-        const { user, password } = req.body;
+        console.log("Datos recibidos:", req.body); // Registrar los datos recibidos
+        const { user, password, data } = req.body;
 
-        // Procesar los datos recibidos
+        if (!user || !password) {
+            res.status(400).json({ error: "Faltan datos obligatorios" });
+            return;
+        }
+
         res.status(200).json({
             User: user,
             Password: password,
-            Data: "Dato adicional procesado",
+            Data: data || "Sin dato adicional",
         });
     } else {
         res.status(405).json({ error: "Método no permitido" });
