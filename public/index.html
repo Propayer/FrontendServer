@@ -64,13 +64,31 @@
     </table>
   </div>
 
-  <script>
+  <script type="module">
+    // Importamos Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyA1douKt_-mrKhRk61mIgQMlRfS1NGJQqs",
+      authDomain: "backend-database-44031.firebaseapp.com",
+      projectId: "backend-database-44031",
+      storageBucket: "backend-database-44031.firebasestorage.app",
+      messagingSenderId: "512267130055",
+      appId: "1:512267130055:web:c7c92d257c5a3f81b75ae2",
+      measurementId: "G-S9QVQMNB52",
+    };
+
+    // Inicializamos Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Referencias a los elementos del DOM
     const loginForm = document.getElementById("login-form");
     const userDataContainer = document.getElementById("user-data");
     const dataTable = document.getElementById("data-table").querySelector("tbody");
     const logoutButton = document.getElementById("logout");
-
-    const apiUrl = "https://frontend-server-zeta.vercel.app/api/getData";
 
     // Manejar el inicio de sesión
     document.getElementById("login").addEventListener("submit", async (e) => {
@@ -79,16 +97,12 @@
       const password = document.getElementById("password").value;
 
       try {
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user, password }),
-        });
+        // Referencia al documento del usuario en Firestore
+        const userDoc = doc(db, "users", `${user}_${password}`);
+        const userData = await getDoc(userDoc);
 
-        if (response.ok) {
-          const data = await response.json();
+        if (userData.exists()) {
+          const data = userData.data().data || [];
           populateTable(data);
           loginForm.classList.add("hidden");
           userDataContainer.classList.remove("hidden");
