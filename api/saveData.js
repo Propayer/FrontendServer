@@ -1,3 +1,21 @@
+const fs = require('fs');
+const path = require('path');
+const admin = require('firebase-admin'); // Importamos Firebase Admin
+const { getFirestore } = require('firebase-admin/firestore');
+
+// Configuración de Firebase
+const firebaseConfig = require('../config/firebase'); // Ajusta la ruta si es necesario
+admin.initializeApp(firebaseConfig);  // Inicializamos Firebase con la configuración
+const db = getFirestore(); // Inicializamos la base de datos
+
+// Directorio para almacenar los datos de manera persistente (Este código ya no es necesario, ya que Firebase se encarga del almacenamiento)
+const dataDir = path.resolve('./data'); // Usamos './data' para almacenar los datos de manera persistente
+
+// Asegúrate de que el directorio de datos exista (No será necesario usarlo si no almacenamos localmente)
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir);
+}
+
 module.exports = async (req, res) => {
   const { method } = req;
 
