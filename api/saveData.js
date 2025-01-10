@@ -5,16 +5,13 @@ const { getFirestore } = require('firebase-admin/firestore');
 
 // Configuración de Firebase
 const firebaseConfig = require('../config/firebase.js'); // Ajusta la ruta si es necesario
-//admin.initializeApp(firebaseConfig);
+if (!admin.apps.length) {
+  admin.initializeApp(firebaseConfig); // Inicializamos Firebase solo una vez
+}
 const db = getFirestore();
 
 // Directorio para almacenar los datos de manera persistente (Este código ya no es necesario, ya que Firebase se encarga del almacenamiento)
-const dataDir = path.resolve('./data'); // Usamos './data' para almacenar los datos de manera persistente
-
-// Asegúrate de que el directorio de datos exista (No será necesario usarlo si no almacenamos localmente)
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir);
-}
+const dataDir = path.resolve('./data'); // Este código ya no se utiliza para almacenar localmente
 
 // Asegúrate de que esta función sea asíncrona
 module.exports = async (req, res) => {  // Aquí hemos añadido async
@@ -31,15 +28,18 @@ module.exports = async (req, res) => {  // Aquí hemos añadido async
     try {
       console.log('Recibiendo datos:', { user, password, data });
 
+      // Referencia al documento de usuario
       const docRef = db.collection('users').doc(`${user}_${password}`);
       const doc = await docRef.get();  // Este uso de await ahora es válido
 
       const existingData = doc.exists ? doc.data().data || [] : [];
       console.log('Datos existentes:', existingData);
 
+      // Agregar los nuevos datos al existente
       existingData.push(data);
       console.log('Datos a guardar:', existingData);
 
+      // Guardar los datos en Firestore
       await docRef.set({ data: existingData });
       return res.status(200).json({ message: 'Data saved successfully' });
     } catch (error) {
