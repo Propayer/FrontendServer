@@ -18,12 +18,12 @@ const serviceAccount = {
 // Inicializar Firebase con un nombre único si aún no se ha inicializado
 const appName = "myFirebaseApp"; // Nombre único para tu aplicación
 
-if (!admin.apps.some(app => app.name === appName)) {
+if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-  }, appName);
+  });
 } else {
-  console.log(`Firebase ya está inicializado con el nombre de la aplicación ${appName}`);
+  admin.app(); // Obtén la instancia ya inicializada
 }
 
 const db = admin.firestore();
