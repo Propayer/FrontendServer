@@ -1,83 +1,53 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Usuario</title>
-    <script>
-        // Función que se ejecuta cuando se envía el formulario
-        async function enviarDatos(event) {
-            event.preventDefault(); // Prevenir que el formulario se envíe de manera convencional
-
-            // Obtener los valores de los campos del formulario
-            const usuario = document.getElementById("usuario").value;
-            const contraseña = document.getElementById("contraseña").value;
-            const dato = document.getElementById("dato").value; // Obtener el valor del campo 'data'
-
-            // Crear un objeto con los datos del formulario
-            const data = {
-                user: usuario,
-                password: contraseña,
-                data: dato  // Añadir el campo 'data' al objeto
-            };
-
-            try {
-                // Enviar los datos al backend utilizando Fetch API
-                const response = await fetch("https://8ef5-79-117-108-243.ngrok-free.app", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data) // Convertir el objeto a JSON
-                });
-
-                // Comprobar si la respuesta fue exitosa
-                if (response.ok) {
-                    // Obtener la respuesta JSON
-                    const responseData = await response.json();
-
-                    // Mostrar los datos recibidos
-                    const resultadoDiv = document.getElementById("resultado");
-                    if (responseData.error) {
-                        resultadoDiv.innerHTML = `<p>Error: ${responseData.error}</p>`;
-                    } else {
-                        resultadoDiv.innerHTML = `
-                            <h3>Datos recibidos:</h3>
-                            <p><strong>Usuario:</strong> ${responseData.User}</p>
-                            <p><strong>Contraseña:</strong> ${responseData.Password}</p>
-                            <p><strong>Dato adicional:</strong> ${responseData.Data}</p>
-                        `;
-                    }
-                } else {
-                    // Si no es exitoso, mostrar un error
-                    const resultadoDiv = document.getElementById("resultado");
-                    resultadoDiv.innerHTML = "<p>Error al obtener los datos del usuario.</p>";
-                }
-            } catch (error) {
-                // Si hay un error en la conexión, mostrar un mensaje
-                const resultadoDiv = document.getElementById("resultado");
-                resultadoDiv.innerHTML = "<p>Error en la conexión con el backend.</p>";
-            }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Storage System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
-
-    <h2>Formulario de Inicio de Sesión</h2>
-    <form onsubmit="enviarDatos(event)">
-        <label for="usuario">Usuario:</label>
-        <input type="text" id="usuario" name="usuario" required><br><br>
-
-        <label for="contraseña">Contraseña:</label>
-        <input type="password" id="contraseña" name="contraseña" required><br><br>
-
-        <label for="dato">Dato adicional:</label>
-        <input type="text" id="dato" name="dato"><br><br> <!-- Nuevo campo 'data' -->
-
-        <button type="submit">Enviar</button>
-    </form>
-
-    <div id="resultado"></div>
-
+  <h1>Stored Data</h1>
+  <div id="data-display">
+    <p>Loading data...</p>
+  </div>
+  <script>
+    async function fetchData() {
+      const response = await fetch('/api/saveData');
+      const data = await response.json();
+      const displayDiv = document.getElementById('data-display');
+      if (data.length === 0) {
+        displayDiv.innerHTML = '<p>No data available.</p>';
+      } else {
+        const table = document.createElement('table');
+        const header = table.insertRow();
+        header.innerHTML = '<th>Username</th><th>Data</th>';
+        data.forEach(item => {
+          const row = table.insertRow();
+          row.innerHTML = `<td>${item.user}</td><td>${item.data}</td>`;
+        });
+        displayDiv.innerHTML = '';
+        displayDiv.appendChild(table);
+      }
+    }
+    fetchData();
+  </script>
 </body>
 </html>
