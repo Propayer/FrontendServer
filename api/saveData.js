@@ -4,7 +4,7 @@ const admin = require('firebase-admin'); // Importamos Firebase Admin
 const { getFirestore } = require('firebase-admin/firestore');
 
 // Configuración de Firebase
-const firebaseConfig = require('../config/firebase'); // Ajusta la ruta si es necesario
+const firebaseConfig = require('../config/firebase.js'); // Ajusta la ruta si es necesario
 admin.initializeApp(firebaseConfig);
 const db = getFirestore();
 
