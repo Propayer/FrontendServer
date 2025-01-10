@@ -12,7 +12,7 @@ if (!fs.existsSync(dataDir)) {
 module.exports = async (req, res) => {
   const { method } = req;
 
-  // Endpoint para guardar datos
+  // Endpoint para guardar datos (POST)
   if (method === 'POST') {
     const { user, password, data } = req.body;
 
@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({ message: 'Data saved successfully' });
   }
 
-  // Endpoint para obtener todos los datos
+  // Endpoint para obtener todos los datos (GET)
   if (method === 'GET') {
     const files = fs.readdirSync(dataDir);
     const allData = files.map(file => {
@@ -44,25 +44,6 @@ module.exports = async (req, res) => {
     });
 
     return res.status(200).json(allData);
-  }
-
-  // Endpoint para obtener los datos específicos de un usuario
-  if (method === 'POST' && req.url === '/api/getData') {
-    const { user, password } = req.body;
-
-    if (!user || !password) {
-      return res.status(400).json({ error: 'Missing user or password' });
-    }
-
-    const fileName = `${user}_${password}.json`;
-    const filePath = path.join(dataDir, fileName);
-
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'User or password not found' });
-    }
-
-    const userData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    return res.status(200).json(userData);
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
