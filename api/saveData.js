@@ -5,7 +5,7 @@ const { getFirestore } = require('firebase-admin/firestore');
 
 // Configuración de Firebase
 const firebaseConfig = require('../config/firebase.js'); // Ajusta la ruta si es necesario
-admin.initializeApp(firebaseConfig);
+//admin.initializeApp(firebaseConfig);
 const db = getFirestore();
 
 // Directorio para almacenar los datos de manera persistente (Este código ya no es necesario, ya que Firebase se encarga del almacenamiento)
