@@ -8,8 +8,8 @@
     "start": "vercel start"
   },
   "dependencies": {
-    "firebase": "^9.0.0",  // o la versión más reciente
-    "firebase-admin": "^11.0.0",  // SDK de administración de Firebase
+    "firebase": "^9.0.0",
+    "firebase-admin": "^11.0.0",
     "dotenv": "^10.0.0"
   },
   "devDependencies": {
