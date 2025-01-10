@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const dataDir = path.resolve('data');
+const dataDir = path.resolve('/tmp/data'); // Usamos '/tmp' porque es temporal en Vercel
 
 // Asegúrate de que el directorio de datos exista
 if (!fs.existsSync(dataDir)) {
