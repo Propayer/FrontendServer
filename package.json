@@ -9,11 +9,11 @@
     "start": "vercel start"
   },
   "dependencies": {
-    "firebase-admin": "^11.0.0",  // SDK de administración de Firebase
-    "dotenv": "^10.0.0"          // (Opcional) Para cargar variables de entorno
+    "firebase-admin": "^11.0.0",
+    "dotenv": "^10.0.0"
   },
   "devDependencies": {
-    "vercel": "^24.0.0"            // Dependencia de Vercel para desarrollo local
+    "vercel": "^24.0.0"
   },
   "engines": {
     "node": "16.x"
