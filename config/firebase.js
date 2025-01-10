@@ -2,7 +2,7 @@
 const admin = require('firebase-admin');
 
 // Ruta al archivo JSON de las credenciales
-const serviceAccount = require('./config/firebase-credentials.json');  // Ajusta la ruta según el nombre y la ubicación del archivo
+const serviceAccount = require('config/firebase-credentials.json');  // Ajusta la ruta según el nombre y la ubicación del archivo
 
 // Inicializa Firebase Admin con las credenciales
 admin.initializeApp({
