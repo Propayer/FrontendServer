@@ -15,10 +15,14 @@ const serviceAccount = {
   "universe_domain": "googleapis.com"
 };
 
-// Inicializar Firebase Admin con las credenciales directamente
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// Verificar si Firebase ya está inicializado antes de inicializarlo
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+} else {
+  admin.app(); // Si ya está inicializado, usar la instancia existente
+}
 
 const db = admin.firestore();
 
