@@ -1,10 +1,21 @@
 {
-  "name": "data-storage-system",
+  "name": "tu-proyecto-firebase",
   "version": "1.0.0",
+  "description": "Proyecto Backend en Vercel con Firebase",
   "main": "index.js",
-  "license": "MIT",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "start": "vercel start"
+  },
   "dependencies": {
-    "fs": "latest",
-    "path": "latest"
+    "firebase-admin": "^11.0.0",  // SDK de administración de Firebase
+    "dotenv": "^10.0.0"          // (Opcional) Para cargar variables de entorno
+  },
+  "devDependencies": {
+    "vercel": "^24.0.0"            // Dependencia de Vercel para desarrollo local
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
