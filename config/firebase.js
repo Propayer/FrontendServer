@@ -1,22 +1,16 @@
-// Importa las funciones necesarias de Firebase
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// Importa Firebase Admin SDK
+const admin = require('firebase-admin');
 
-// Configuración de Firebase para tu proyecto
-const firebaseConfig = {
-  apiKey: "AIzaSyA1douKt_-mrKhRk61mIgQMlRfS1NGJQqs",
-  authDomain: "backend-database-44031.firebaseapp.com",
-  projectId: "backend-database-44031",
-  storageBucket: "backend-database-44031.firebasestorage.app",
-  messagingSenderId: "512267130055",
-  appId: "1:512267130055:web:c7c92d257c5a3f81b75ae2",
-  measurementId: "G-S9QVQMNB52"
-};
+// Ruta al archivo JSON de las credenciales
+const serviceAccount = require('./config/firebase-credentials.json');  // Ajusta la ruta según el nombre y la ubicación del archivo
 
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
+// Inicializa Firebase Admin con las credenciales
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
-// Inicializar Analytics (opcional, si lo usas)
-const analytics = getAnalytics(app);
+// Obtén acceso a Firestore (si lo necesitas)
+const db = admin.firestore();
 
-export default app; // Exporta la app para usarla en otras partes del proyecto
+// Exporta db para usarlo en otras partes del proyecto
+module.exports = db;
