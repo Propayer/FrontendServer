@@ -4,9 +4,8 @@
   "description": "Proyecto Backend en Vercel con Firebase",
   "main": "index.js",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "vercel build",
-    "start": "vercel start"
+    "dev": "vercel dev",  // Para desarrollo local
+    "start": "vercel start"  // Para producción en Vercel
   },
   "dependencies": {
     "firebase-admin": "^11.0.0",
