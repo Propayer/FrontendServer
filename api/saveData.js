@@ -63,15 +63,14 @@ module.exports = async (req, res) => {
     }
   }
 
-// Función para probar la IA
 testIaButton.addEventListener("click", async () => {
   try {
-    const response = await fetch("https://nodejs-serverless-function-express-82331fdxj-propayers-projects.vercel.app/api/chat", {
+    const response = await fetch("/api/ask-ia", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ question: "Funciona?" }), // Enviar la pregunta en el formato esperado
+      body: JSON.stringify({ question: "Funciona?" }),
     });
 
     if (!response.ok) {
@@ -80,9 +79,8 @@ testIaButton.addEventListener("click", async () => {
 
     const data = await response.json();
 
-    // Verificar el prefijo [IA]
     if (data.answer && data.answer.startsWith("[IA]")) {
-      responseMessage.textContent = data.answer; // Mostrar la respuesta con prefijo
+      responseMessage.textContent = data.answer;
       responseMessage.classList.remove("hidden");
     } else {
       responseMessage.textContent = "No se recibió mensaje válido.";
