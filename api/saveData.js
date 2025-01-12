@@ -66,7 +66,7 @@ module.exports = async (req, res) => {
 // Función para probar la IA
 testIaButton.addEventListener("click", async () => {
   try {
-    const response = await fetch("https://nodejs-serverless-function-express-82331fdxj-propayers-projects.vercel.app/", {
+    const response = await fetch("https://nodejs-serverless-function-express-82331fdxj-propayers-projects.vercel.app/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
