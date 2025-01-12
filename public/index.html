@@ -62,12 +62,17 @@
       </thead>
       <tbody></tbody>
     </table>
+    <button id="test-ia">Test IA</button>
+    <div id="ia-response" class="hidden">
+      <p><strong>Respuesta IA:</strong> <span id="ia-text"></span></p>
+    </div>
   </div>
 
   <script type="module">
     // Importamos Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { sendToIA } from './saveData.js';  // Importamos la función para interactuar con el servidor IA
 
     // Configuración de Firebase
     const firebaseConfig = {
@@ -89,6 +94,9 @@
     const userDataContainer = document.getElementById("user-data");
     const dataTable = document.getElementById("data-table").querySelector("tbody");
     const logoutButton = document.getElementById("logout");
+    const testIaButton = document.getElementById("test-ia");
+    const iaResponseDiv = document.getElementById("ia-response");
+    const iaTextSpan = document.getElementById("ia-text");
 
     // Manejar el inicio de sesión
     document.getElementById("login").addEventListener("submit", async (e) => {
@@ -133,6 +141,15 @@
         dataTable.appendChild(row);
       });
     }
+
+    // Evento del botón Test IA
+    testIaButton.addEventListener("click", async () => {
+      const response = await sendToIA("Funciona?");
+      if (response.startsWith("[IA]")) {
+        iaTextSpan.textContent = response.substring(5);  // Extraer y mostrar la respuesta
+        iaResponseDiv.classList.remove("hidden");
+      }
+    });
   </script>
 </body>
 </html>
