@@ -63,14 +63,10 @@ module.exports = async (req, res) => {
     }
   }
 
-import Groq from "groq-sdk";
-import { VercelRequest, VercelResponse } from "@vercel/node";
-
-// Configuración de la clave de la API de Groq
-const groq = new Groq({ apiKey: "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" });
+import { exec } from 'child_process';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req, res) {
-  // Asegurarse de que la solicitud sea de tipo POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
   }
@@ -82,20 +78,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Realizar la solicitud a la API de Groq
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [{ role: "user", content: message }],
-      model: "llama-3.3-70b-versatile",
-    });
+    exec(
+      `curl -X POST "https://api.groq.com/openai/v1/chat/completions" \
+      -H "Authorization: Bearer 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" \
+      -H "Content-Type: application/json" \
+      -d '{"messages":[{"role":"user","content":"${message}"}],"model":"llama-3.3-70b-versatile"}'`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error("Error ejecutando el script:", error.message);
+          return res.status(500).json({ error: "Error interno del servidor" });
+        }
 
-    const iaResponse = chatCompletion.choices[0]?.message?.content || "No se recibió respuesta de la IA.";
+        if (stderr) {
+          console.error("Error en stderr:", stderr);
+          return res.status(500).json({ error: "Error en la ejecución del script" });
+        }
 
-    // Responder con el texto de la IA prefijado con [IA]
-    return res.status(200).json({ message: `[IA] ${iaResponse}` });
+        const response = stdout || "No se recibió respuesta válida de la IA.";
+        return res.status(200).json({ message: `[IA] ${response}` });
+      }
+    );
   } catch (error) {
     console.error("Error al contactar con la IA:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
-}
-  return res.status(405).json({ error: 'Method not allowed' });
+}  return res.status(405).json({ error: 'Method not allowed' });
 };
