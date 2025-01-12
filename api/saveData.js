@@ -66,12 +66,12 @@ module.exports = async (req, res) => {
 // Función para probar la IA
 testIaButton.addEventListener("click", async () => {
   try {
-    const response = await fetch("https://server-ia.vercel.app/", {
+    const response = await fetch("https://nodejs-serverless-function-express-82331fdxj-propayers-projects.vercel.app/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message: "Funciona?" }),
+      body: JSON.stringify({ question: "Funciona?" }), // Enviar la pregunta en el formato esperado
     });
 
     if (!response.ok) {
@@ -81,8 +81,8 @@ testIaButton.addEventListener("click", async () => {
     const data = await response.json();
 
     // Verificar el prefijo [IA]
-    if (data.message && data.message.startsWith("[IA]")) {
-      responseMessage.textContent = data.message;
+    if (data.answer && data.answer.startsWith("[IA]")) {
+      responseMessage.textContent = data.answer; // Mostrar la respuesta con prefijo
       responseMessage.classList.remove("hidden");
     } else {
       responseMessage.textContent = "No se recibió mensaje válido.";
