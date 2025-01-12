@@ -1,0 +1,34 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import Groq from 'groq-sdk';
+
+// Inicializa el cliente con tu clave API
+const groq = new Groq({ apiKey: "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" });
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method === 'POST') {
+    try {
+      const { question } = req.body;  // Recibe la pregunta
+      if (!question) {
+        return res.status(400).json({ error: 'La pregunta es requerida' });
+      }
+
+      // Llamada a la IA
+      const promptHistory = [{ role: "user", content: question }];
+      const response = await groq.chat.completions.create({
+        messages: promptHistory,
+        model: "llama-3.3-70b-versatile",
+      });
+
+      const iaResponse = response.choices[0]?.message?.content || "No se recibió respuesta de la IA.";
+      
+      // Responder al cliente con el prefijo [IA]
+      return res.status(200).json({ answer: `[IA] ${iaResponse}` });
+
+    } catch (error) {
+      console.error("Error al procesar la IA:", error);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  } else {
+    return res.status(405).json({ error: 'Método no permitido' });
+  }
+}
