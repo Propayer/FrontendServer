@@ -63,34 +63,39 @@ module.exports = async (req, res) => {
     }
   }
 
-testIaButton.addEventListener("click", async () => {
+import Groq from "groq-sdk";
+import { VercelRequest, VercelResponse } from "@vercel/node";
+
+// Configuración de la clave de la API de Groq
+const groq = new Groq({ apiKey: "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" });
+
+export default async function handler(req, res) {
+  // Asegurarse de que la solicitud sea de tipo POST
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Método no permitido" });
+  }
+
+  const { message } = req.body;
+
+  if (!message) {
+    return res.status(400).json({ error: "Falta el mensaje" });
+  }
+
   try {
-    const response = await fetch("/api/ask-ia", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ question: "Funciona?" }),
+    // Realizar la solicitud a la API de Groq
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [{ role: "user", content: message }],
+      model: "llama-3.3-70b-versatile",
     });
 
-    if (!response.ok) {
-      throw new Error(`Error en la respuesta de la IA: ${response.statusText}`);
-    }
+    const iaResponse = chatCompletion.choices[0]?.message?.content || "No se recibió respuesta de la IA.";
 
-    const data = await response.json();
-
-    if (data.answer && data.answer.startsWith("[IA]")) {
-      responseMessage.textContent = data.answer;
-      responseMessage.classList.remove("hidden");
-    } else {
-      responseMessage.textContent = "No se recibió mensaje válido.";
-      responseMessage.classList.remove("hidden");
-    }
+    // Responder con el texto de la IA prefijado con [IA]
+    return res.status(200).json({ message: `[IA] ${iaResponse}` });
   } catch (error) {
     console.error("Error al contactar con la IA:", error);
-    responseMessage.textContent = `Error al contactar con la IA: ${error.message}`;
-    responseMessage.classList.remove("hidden");
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
-});
+}
   return res.status(405).json({ error: 'Method not allowed' });
 };
