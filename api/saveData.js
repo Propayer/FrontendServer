@@ -63,26 +63,36 @@ module.exports = async (req, res) => {
     }
   }
 
-export async function sendToIA(message) {
+// Función para probar la IA
+testIaButton.addEventListener("click", async () => {
   try {
     const response = await fetch("https://server-ia.vercel.app/", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({ message: "Funciona?" }),
     });
 
     if (!response.ok) {
-      throw new Error("Error al enviar la solicitud");
+      throw new Error(`Error en la respuesta de la IA: ${response.statusText}`);
     }
 
     const data = await response.json();
-    return data.reply || "No response from AI"; // Devolver la respuesta que contiene el prefijo [IA]
+
+    // Verificar el prefijo [IA]
+    if (data.message && data.message.startsWith("[IA]")) {
+      responseMessage.textContent = data.message;
+      responseMessage.classList.remove("hidden");
+    } else {
+      responseMessage.textContent = "No se recibió mensaje válido.";
+      responseMessage.classList.remove("hidden");
+    }
   } catch (error) {
-    console.error("Error al comunicarse con el servidor IA:", error);
-    return "Error al comunicarse con el servidor IA";
+    console.error("Error al contactar con la IA:", error);
+    responseMessage.textContent = `Error al contactar con la IA: ${error.message}`;
+    responseMessage.classList.remove("hidden");
   }
-}
+});
   return res.status(405).json({ error: 'Method not allowed' });
 };
