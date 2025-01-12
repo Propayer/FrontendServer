@@ -1,7 +1,7 @@
 {
   "name": "backend-database-44031",
   "version": "1.0.0",
-  "description": "Proyecto Backend en Vercel con Firebase",
+  "description": "Proyecto Backend en Vercel con Firebase e IA",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "firebase-admin": "^11.0.0",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "groq-sdk": "^1.0.0"
   },
   "devDependencies": {
     "vercel": "^24.0.0"
