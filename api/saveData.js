@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
   try {
     // Enviar la solicitud con el mensaje "¿Funciona?"
-    const response = await fetch("https://server-ai-virid.vercel.app/ask", {
+    const response = await fetch("https://server-ai-virid.vercel.app", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
