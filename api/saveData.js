@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin'); // Importamos Firebase Admin
+const fetch = require('node-fetch');
 const { getFirestore } = require('firebase-admin/firestore');
 
 // Configuración de Firebase directamente en el archivo
@@ -62,11 +63,6 @@ module.exports = async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch data' });
     }
   }
-
-import { exec } from "child_process";
-import { VercelRequest, VercelResponse } from "@vercel/node";
-
-import fetch from "node-fetch";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
