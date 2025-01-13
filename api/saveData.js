@@ -73,20 +73,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Método no permitido" });
   }
 
-  const { message } = req.body;
-
-  if (!message) {
-    return res.status(400).json({ error: "Mensaje no proporcionado" });
-  }
-
   try {
-    // Realizar la solicitud a la IA en Vercel
+    // Enviar la solicitud con el mensaje "¿Funciona?"
     const response = await fetch("https://server-ai-virid.vercel.app/ask", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message: "¿Funciona?" }),
     });
 
     if (!response.ok) {
@@ -107,6 +101,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 }
+
 
 return res.status(405).json({ error: 'Method not allowed' });
 };
