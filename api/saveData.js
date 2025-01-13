@@ -66,30 +66,47 @@ module.exports = async (req, res) => {
 import { exec } from "child_process";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 
+import fetch from "node-fetch";
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
   }
 
+  const { message } = req.body;
+
+  if (!message) {
+    return res.status(400).json({ error: "Mensaje no proporcionado" });
+  }
+
   try {
-    exec(`sh ./callGroqApi.sh "funciona?"`, (error, stdout, stderr) => {
-      if (error) {
-        console.error("Error ejecutando el script:", error.message);
-        return res.status(500).json({ error: "Error interno del servidor" });
-      }
-
-      if (stderr) {
-        console.error("Error en stderr:", stderr);
-        return res.status(500).json({ error: "Error en la ejecución del script" });
-      }
-
-      const response = stdout || "No se recibió respuesta válida de la IA.";
-      return res.status(200).json({ message: `[IA] ${response}` });
+    // Realizar la solicitud a la IA en Vercel
+    const response = await fetch("https://server-ai-virid.vercel.app/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message }),
     });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: "Error al contactar con la IA" });
+    }
+
+    const data = await response.json();
+    const iaResponse = data.message || "No se recibió respuesta válida de la IA.";
+
+    // Si la respuesta contiene el prefijo '[IA]', devolverla
+    if (iaResponse.startsWith("[IA]")) {
+      return res.status(200).json({ message: iaResponse });
+    }
+
+    return res.status(200).json({ message: "Respuesta no válida de la IA." });
   } catch (error) {
     console.error("Error al contactar con la IA:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 }
+
 return res.status(405).json({ error: 'Method not allowed' });
 };
